@@ -94,6 +94,7 @@ These class methods enable you to:
  - Move out of maintenance mode `->up()`
  - Check if you have bypassed maintenance mode `->inBypassMode()`
  - Check if there is a notice available for users about upcoming maintenance `->notice()`
+ - And More!
  
 ## Artisan Commands
 
@@ -108,7 +109,7 @@ This command will walk you through the process of creating a new maintenance win
 - `--redirect-to=` Configure a redirect for your users while the application is in maintenance mode
 
 ### `maintenance:up`
-This command will move your migration out of maintenance mode
+This command will move your application out of maintenance mode
 
 ### `maintenance:upcoming`
 This command will list all of your future maintenance windows in a table format
