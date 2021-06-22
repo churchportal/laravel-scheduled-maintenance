@@ -92,6 +92,8 @@ These class methods enable you to:
  - Check if the application is in maintenance mode `->isDown()`
  - Move into maintenance mode `->down()`
  - Move out of maintenance mode `->up()`
+ - Get the currently active maintenance window `->current()`
+ - Get the next scheduled maintenance window `->next()`
  - Check if you have bypassed maintenance mode `->inBypassMode()`
  - Check if there is a notice available for users about upcoming maintenance `->notice()`
  - And More!
@@ -169,7 +171,7 @@ Here are some examples of how you can implement that notice:
 
 @if(app('maintenance')->inBypassMode()) 
     <p>
-        Your application is currently in maintenance mode!
+        Your application is currently in maintenance mode!  It should last until {{ app('maintenance')->current()->ends_at }}
     </p>
 @endif
 ```
