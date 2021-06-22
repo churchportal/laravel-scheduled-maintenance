@@ -4,7 +4,8 @@
     "keywords": [
         "churchportal",
         "laravel",
-        "laravel-scheduled-maintenance"
+        "laravel-scheduled-maintenance",
+        "laravel maintenance"
     ],
     "homepage": "https://github.com/churchportal/laravel-scheduled-maintenance",
     "license": "MIT",
