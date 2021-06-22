@@ -19,7 +19,7 @@
         "php": "^8.0",
         "calebporzio/sushi": "^2.2",
         "illuminate/contracts": "^8.37",
-        "spatie/laravel-package-tools": "^1.4.3",
+        "spatie/laravel-package-tools": "^1.4.3"
     },
     "require-dev": {
         "brianium/paratest": "^6.2",
