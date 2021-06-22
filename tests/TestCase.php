@@ -2,9 +2,9 @@
 
 namespace Churchportal\ScheduledMaintenance\Tests;
 
+use Churchportal\ScheduledMaintenance\ScheduledMaintenanceServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Churchportal\ScheduledMaintenance\ScheduledMaintenanceServiceProvider;
 
 class TestCase extends Orchestra
 {

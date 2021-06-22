@@ -40,7 +40,7 @@ class ScheduledMaintenance
 
         $model = $this->next();
 
-        if (!$model) {
+        if (! $model) {
             $model = $this->model->create(
                 array_merge([
                     'starts_at' => now(),
@@ -52,7 +52,7 @@ class ScheduledMaintenance
             'is_active' => 1,
         ]);
 
-        event(new MaintenanceStarted($model, !$model->wasRecentlyCreated));
+        event(new MaintenanceStarted($model, ! $model->wasRecentlyCreated));
 
         return $model;
     }

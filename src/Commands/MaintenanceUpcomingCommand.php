@@ -17,7 +17,7 @@ class MaintenanceUpcomingCommand extends Command
 
         $model->where('starts_at', '>=', now())
             ->orderBy('starts_at')
-            ->each(function($row) use (&$tableData) {
+            ->each(function ($row) use (&$tableData) {
                 $activeColor = $row->active ? 'green' : 'red';
                 $active = $row->active ? 'Yes' : 'No';
 

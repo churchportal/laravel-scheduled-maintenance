@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class MaintenanceScheduled
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public ScheduledMaintenanceModel $scheduledMaintenance;
 

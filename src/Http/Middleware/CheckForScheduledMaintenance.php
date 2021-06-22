@@ -4,7 +4,6 @@ namespace Churchportal\ScheduledMaintenance\Http\Middleware;
 
 use Churchportal\ScheduledMaintenance\ScheduledMaintenanceModeBypassCookie;
 use Closure;
-use Illuminate\Foundation\Http\MaintenanceModeBypassCookie;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 
 class CheckForScheduledMaintenance extends PreventRequestsDuringMaintenance
@@ -36,7 +35,7 @@ class CheckForScheduledMaintenance extends PreventRequestsDuringMaintenance
             }
 
             return response(view(config('scheduled-maintenance.view'))->render())->setStatusCode($statusCode);
-        } else if ($request->hasCookie(config('scheduled-maintenance.bypass_cookie_name'))) {
+        } elseif ($request->hasCookie(config('scheduled-maintenance.bypass_cookie_name'))) {
             $response = $next($request);
 
             return $response->withCookie(ScheduledMaintenanceModeBypassCookie::remove());

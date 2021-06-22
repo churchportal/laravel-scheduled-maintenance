@@ -3,8 +3,8 @@
 namespace Churchportal\ScheduledMaintenance;
 
 use Churchportal\ScheduledMaintenance\Commands\MaintenanceDownCommand;
-use Churchportal\ScheduledMaintenance\Commands\MaintenanceUpCommand;
 use Churchportal\ScheduledMaintenance\Commands\MaintenanceUpcomingCommand;
+use Churchportal\ScheduledMaintenance\Commands\MaintenanceUpCommand;
 use Churchportal\ScheduledMaintenance\Commands\ScheduleMaintenanceCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
