@@ -14,7 +14,7 @@ class MaintenanceUpCommand extends Command
 
     public function handle()
     {
-        if (!$this->confirmToProceed()) {
+        if (! $this->confirmToProceed()) {
             return 1;
         }
 
