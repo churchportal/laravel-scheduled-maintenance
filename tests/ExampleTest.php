@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Tests;
+namespace Churchportal\ScheduledMaintenance\Tests;
 
 class ExampleTest extends TestCase
 {

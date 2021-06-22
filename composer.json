@@ -1,24 +1,25 @@
 {
-    "name": "vendor_slug/package_slug",
-    "description": ":package_description",
+    "name": "churchportal/laravel-scheduled-maintenance",
+    "description": "Schedule maintenance windows and customize the user experience while your Laravel application is down",
     "keywords": [
-        ":vendor_name",
+        "churchportal",
         "laravel",
-        "package_slug"
+        "laravel-scheduled-maintenance"
     ],
-    "homepage": "https://github.com/vendor_slug/package_slug",
+    "homepage": "https://github.com/churchportal/laravel-scheduled-maintenance",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "James Burrow",
+            "email": "james.burrow@churchportal.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.0",
+        "calebporzio/sushi": "^2.2",
+        "illuminate/contracts": "^8.37",
         "spatie/laravel-package-tools": "^1.4.3",
-        "illuminate/contracts": "^8.37"
     },
     "require-dev": {
         "brianium/paratest": "^6.2",
@@ -30,13 +31,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Churchportal\\ScheduledMaintenance\\": "src",
+            "Churchportal\\ScheduledMaintenance\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Churchportal\\ScheduledMaintenance\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,10 +51,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Churchportal\\ScheduledMaintenance\\ScheduledMaintenanceServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\SkeletonFacade"
+                "ScheduledMaintenance": "Churchportal\\ScheduledMaintenance\\ScheduledMaintenanceFacade"
             }
         }
     },

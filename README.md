@@ -1,87 +1,189 @@
-# :package_description
+# Laravel Scheduled Maintenance
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/vendor_slug/package_slug.svg?style=flat-square)](https://packagist.org/packages/vendor_slug/package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/vendor_slug/package_slug/run-tests?label=tests)](https://github.com/vendor_slug/package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/vendor_slug/package_slug/Check%20&%20fix%20styling?label=code%20style)](https://github.com/vendor_slug/package_slug/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/vendor_slug/package_slug.svg?style=flat-square)](https://packagist.org/packages/vendor_slug/package_slug)
+This package enables you to schedule maintenance windows for your Laravel application, make it easier to notify users about upcoming maintenance, and also customize the user experience for your users while the application is down for maintenance.
 
----
-This repo can be used as to scaffold a Laravel package. Follow these steps to get started:
+It's built in a similar fashion to laravel's preexisting `down` and `up` commands with support for bypass mode, redirects, and custom HTTP status codes.
 
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton
-2. Run "./configure-skeleton.sh" to run a script that will replace all placeholders throughout all the files
-3. Remove this block of text.
-4. Have fun creating your package.
-5. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
+**NOTE:** This package does rely on your database, if you are preforming significant DB work during a maintenance window then you may want to consider using laravel's `down` for that work instead. 
 ## Installation
 
-You can install the package via composer:
+Install the package via composer:
 
 ```bash
-composer require vendor_slug/package_slug
+composer require churchportal/laravel-scheduled-maintenance
 ```
-
-You can publish and run the migrations with:
-
+Publish the package assets (this will publish the config file, 1 migration, and and example blade view):
 ```bash
-php artisan vendor:publish --provider="VendorName\Skeleton\SkeletonServiceProvider" --tag="package_slug-migrations"
+php artisan vendor:publish --provider="Churchportal\ScheduledMaintenance\ScheduledMaintenanceServiceProvider"
+```
+Run the migration:
+```bash
 php artisan migrate
 ```
 
-You can publish the config file with:
-```bash
-php artisan vendor:publish --provider="VendorName\Skeleton\SkeletonServiceProvider" --tag="package_slug-config"
-```
-
-This is the contents of the published config file:
+## Configuration
 
 ```php
+<?php
+
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Prerequisites
+    |--------------------------------------------------------------------------
+    | Configure the table name and model for maintenance windows.  You can use
+    | your own model as long as it extends the default class below.
+    */
+
+    'table_name' => 'scheduled_maintenance',
+    'model' => \Churchportal\ScheduledMaintenance\Models\ScheduledMaintenanceModel::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maintenance Defaults
+    |--------------------------------------------------------------------------
+    | These defaults will be used when scheduling maintenance windows or moving
+    | your application to maintenance mode. You can customize these for each
+    | maintenance window as needed.
+    */
+
+    'redirect_to' => null,
+    'status_code' => 503,
+    'bypass_secret' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Bypass Cookie Name
+    |--------------------------------------------------------------------------
+    | This cookie will be created when you visit the bypass secret url. It's
+    | recommended that you customize this cookie name to your env or app name
+    */
+
+    'bypass_cookie_name' => 'laravel_maintenance',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Excluded URIs
+    |--------------------------------------------------------------------------
+    | These paths will still be accessible during maintenance mode.  These will
+    | apply to any maintenance windows so use with caution!
+    */
+
+    'except' => [
+        'status',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blade View
+    |--------------------------------------------------------------------------
+    | This view will be rendered when you application is in maintenance mode.
+    | You should use your own view, the default we've provided is just an
+    | example of how you could implement something.
+    */
+
+    'view' => 'scheduled-maintenance::down',
 ];
+
 ```
+## The `app('maintenance')` singleton
+The `ScheduledMaintenace` class is bound to the container via the `maintenance` key.
+These class methods enable you to:
+ - Check if the application is in maintenance mode `->isDown()`
+ - Move into maintenance mode `->down()`
+ - Move out of maintenance mode `->up()`
+ - Check if you have bypassed maintenance mode `->inBypassMode()`
+ - Check if there is a notice available for users about upcoming maintenance `->notice()`
+ 
+## Artisan Commands
+
+### `maintenance:schedule`
+This command will walk you through the process of creating a new maintenance window.  You'll be prompted for information like when the maintenance will start, when users should see a notification about the upcoming maintenance, etc.
+
+### `maintenance:down`
+**This command will immediately move your application into maintenance mode!**  When running this command the package will either move your next scheduled maintenance window into an active state or it will create a new record if there isn't one already scheduled.
+
+#### Options when creating a new record:
+- `--bypass-secret=` Set the bypass secret for this maintenance window
+- `--redirect-to=` Configure a redirect for your users while the application is in maintenance mode
+
+### `maintenance:up`
+This command will move your migration out of maintenance mode
+
+### `maintenance:upcoming`
+This command will list all of your future maintenance windows in a table format
+
+## Events
+All events include a public `$scheduledMaintenace` model property
+
+### `MaintenanceScheduled`
+This event is triggered after scheduling maintenance using the `maintenance:schedule` command
+
+### `MaintenanceStarted`
+This event is triggered after running `app('maintenance')->down()`.
+There is an additional `$wasPreviouslyScheduled` property that will be false if the maintenance was started without being previous scheduled.
+
+### `MaintenanceCompleted`
+This event is triggered after running `app('maintenance')->up()`
 
 ## Usage
 
+### Display notice to users about upcoming maintenance
+Using the `app('maintenance')->notice()` method you'll have access to the details about the next upcoming maintenance window
+
+#### in blade
+```blade
+@extends('layout')
+
+@if(app('maintenance')->notice()) 
+    <p>
+        We'll be preforming server maintenance on {{ app('maintenance')->notice()->starts_at->format('F jS, \a\t g:ia') }}
+    </p>
+@endif
+```
+
+#### in inerita
 ```php
-$skeleton = new VendorName\Skeleton();
-echo $skeleton->echoPhrase('Hello, Spatie!');
+// In your Inerita middleware
+
+\Inertia\Inertia::share([
+    'upcomingMaintenance' => app('maintenance')->notice(),
+]);
 ```
 
-## Testing
+```vue
+<!-- In your Inertia layout -->
 
-```bash
-composer test
+<UpcomingMaintenance v-if="$page.props.upcomingMaintenance" />
 ```
 
-## Changelog
+### Bypassing maintenance mode
+You can bypass maintenance mode by navigating to the `bypass_secret` url.
+It can be useful when testing your application to remember that it's still in maintenance mode.
+Here are some examples of how you can implement that notice: 
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+#### in blade
+```blade
+@extends('layout')
 
-## Contributing
+@if(app('maintenance')->inBypassMode()) 
+    <p>
+        Your application is currently in maintenance mode!
+    </p>
+@endif
+```
 
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+#### in inerita
+```php
+// In your Inerita middleware
 
-## Security Vulnerabilities
+\Inertia\Inertia::share([
+    'bypassedMaintenance' => app('maintenance')->inBypassMode(),
+]);
+```
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+```vue
+<!-- In your Inertia layout -->
 
-## Credits
-
-- [:author_name](https://github.com/:author_username)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+<BypassedMaintenanceBanner v-if="$page.props.bypassedMaintenance" />
+```
