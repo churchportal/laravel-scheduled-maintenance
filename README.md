@@ -167,6 +167,7 @@ Using the `app('maintenance')->notice()` method you'll have access to the detail
 
 <UpcomingMaintenance v-if="$page.props.upcomingMaintenance" />
 ```
+![image](https://user-images.githubusercontent.com/16297677/123030004-10883980-d3b0-11eb-9009-acc1ae45ef52.png)
 
 ### Bypassing maintenance mode
 You can bypass maintenance mode by navigating to the `bypass_secret` url.
@@ -198,3 +199,5 @@ Here are some examples of how you can implement that notice:
 
 <BypassedMaintenanceBanner v-if="$page.props.bypassedMaintenance" />
 ```
+![image](https://user-images.githubusercontent.com/16297677/123030098-36154300-d3b0-11eb-9eb4-7ff170d5e01e.png)
+
