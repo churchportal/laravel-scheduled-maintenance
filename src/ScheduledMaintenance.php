@@ -79,6 +79,6 @@ class ScheduledMaintenance
 
     public function inBypassMode()
     {
-        return $this->isDown() && request()->hasCookie(config('scheduled-maintenance.bypass_cookie_name'));
+        return $this->isDown() && request()->cookies->has(config('scheduled-maintenance.bypass_cookie_name'));
     }
 }
