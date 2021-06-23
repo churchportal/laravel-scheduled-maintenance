@@ -20,6 +20,6 @@ class MaintenanceUpCommand extends Command
 
         app('maintenance')->up();
 
-        $this->info('Application is not in maintenance mode!');
+        $this->info('Application is live!');
     }
 }

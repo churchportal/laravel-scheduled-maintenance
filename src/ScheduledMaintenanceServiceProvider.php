@@ -2,6 +2,7 @@
 
 namespace Churchportal\ScheduledMaintenance;
 
+use Churchportal\ScheduledMaintenance\Commands\MaintenanceCancelCommand;
 use Churchportal\ScheduledMaintenance\Commands\MaintenanceDownCommand;
 use Churchportal\ScheduledMaintenance\Commands\MaintenanceUpcomingCommand;
 use Churchportal\ScheduledMaintenance\Commands\MaintenanceUpCommand;
@@ -23,6 +24,7 @@ class ScheduledMaintenanceServiceProvider extends PackageServiceProvider
                 MaintenanceDownCommand::class,
                 MaintenanceUpCommand::class,
                 MaintenanceUpcomingCommand::class,
+                MaintenanceCancelCommand::class,
             ]);
     }
 

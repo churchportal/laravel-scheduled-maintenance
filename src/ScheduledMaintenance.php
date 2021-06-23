@@ -2,6 +2,7 @@
 
 namespace Churchportal\ScheduledMaintenance;
 
+use Churchportal\ScheduledMaintenance\Events\MaintenanceCancelled;
 use Churchportal\ScheduledMaintenance\Events\MaintenanceCompleted;
 use Churchportal\ScheduledMaintenance\Events\MaintenanceStarted;
 use Illuminate\Support\Arr;
@@ -23,12 +24,12 @@ class ScheduledMaintenance
     public function up(): void
     {
         if ($this->isDown()) {
+            event(new MaintenanceCompleted($this->current()));
+
             $this->current()->update([
                 'is_active' => 0,
                 'deleted_at' => now(),
             ]);
-
-            event(new MaintenanceCompleted($this->current()));
         }
     }
 
@@ -55,6 +56,26 @@ class ScheduledMaintenance
         event(new MaintenanceStarted($model, ! $model->wasRecentlyCreated));
 
         return $model;
+    }
+
+    public function find($id)
+    {
+        return $this->model->where('id', $id)->orWhere('uuid', $id)->withTrashed()->first();
+    }
+
+    public function delete($id)
+    {
+        $model = $this->model->where('id', $id)->orWhere('uuid', $id)->first();
+
+        if ($model) {
+            event(new MaintenanceCancelled($model));
+
+            $model->delete();
+
+            return true;
+        }
+
+        return false;
     }
 
     public function current()

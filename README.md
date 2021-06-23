@@ -12,7 +12,7 @@ Install the package via composer:
 ```bash
 composer require churchportal/laravel-scheduled-maintenance
 ```
-Publish the package assets (this will publish the config file, 1 migration, and and example blade view):
+Publish the package assets (this will publish the config file, 1 migration, and an example blade view):
 ```bash
 php artisan vendor:publish --provider="Churchportal\ScheduledMaintenance\ScheduledMaintenanceServiceProvider"
 ```
@@ -89,14 +89,16 @@ return [
 ## The `app('maintenance')` singleton
 The `ScheduledMaintenace` class is bound to the container via the `maintenance` key.
 These class methods enable you to:
- - Check if the application is in maintenance mode `->isDown()`
- - Move into maintenance mode `->down()`
- - Move out of maintenance mode `->up()`
- - Get the currently active maintenance window `->current()`
- - Get the next scheduled maintenance window `->next()`
- - Check if you have bypassed maintenance mode `->inBypassMode()`
- - Check if there is a notice available for users about upcoming maintenance `->notice()`
- - And More!
+ - Check if the application is in maintenance mode: `->isDown()`
+ - Move into maintenance mode: `->down()`
+ - Move out of maintenance mode: `->up()`
+ - Get the currently active maintenance window: `->current()`
+ - Get the next scheduled maintenance window: `->next()`
+ - Get all future maintenance windows: `->scheduled()`
+ - Find a scheduled maintenance window by id or uuid: `->find($id)`
+ - Delete a scheduled maintenance window by id or uuid: `->delete($id)`
+ - Check if you have bypassed maintenance mode: `->inBypassMode()`
+ - Check if there is a notice available for users about upcoming maintenance: `->notice()`
  
 ## Artisan Commands
 
@@ -116,6 +118,9 @@ This command will move your application out of maintenance mode
 ### `maintenance:upcoming`
 This command will list all of your future maintenance windows in a table format
 
+### `maintenance:cancel {id}`
+This command will delete a scheduled maintenance window
+
 ## Events
 All events include a public `$scheduledMaintenace` model property
 
@@ -128,6 +133,9 @@ There is an additional `$wasPreviouslyScheduled` property that will be false if 
 
 ### `MaintenanceCompleted`
 This event is triggered after running `app('maintenance')->up()`
+
+### `MaintenanceCancelled`
+This event is triggered after running `app('maintenance')->delete($id)`
 
 ## Usage
 
